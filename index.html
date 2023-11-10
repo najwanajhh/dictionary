@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>dictionary fetch API</title>
+    <link rel="stylesheet" href="index.css" />
+    <style>
+      header{
+        background-image: url('dict.jpg');
+        max-height: 900px;
+        min-height: 80vh;
+      }
+      .sec{
+			margin-top: 110px;
+			margin-left: auto;
+			margin-right: auto;
+			margin-bottom: 100px;
+			padding:20px 10px;
+			font-weight: bold;
+			font-size: 20px;
+			background-color: rgba(37, 32, 32, 0.762);
+			border-radius: 20px;
+			width: 800px;
+		}
+    body{
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    article{
+      padding: 30px;
+    }
+    .logo{
+    		height: 50px;
+		    width: 50px;
+        margin-right: 20px;
+		}
+    .thai{
+		color: rgb(6, 6, 6);
+		font-family: Lucida Handwriting;
+		font-weight: bold;
+		font-size: 25px;
+		text-align: center;
+	}
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="hero1">
+        <nav>
+          <img src="logo.png" class="logo">
+          <h1>DICTIONARY & THESAURUS</h1>
+          <ul >
+            <li class="nav1"><a href="wordsOfTheDay.html">wordsOfTheDay</a></li>
+            <li class="nav1"><a href="history.html">History</a></li>
+          </ul>
+        </nav>
+        <div>
+          <h2 class="thai">WELCOME TO OUR DICTIONARY WEBSITE</h2>
+        </div>
+        <!--<p>Welcome to Dictionary Application.</p>-->
+        <section class="sec">
+          <input type="text" id="searchData" placeholder="Enter Words">
+          <button onclick="buttonClick()">Enter</button> 
+        </section>
+      </div>    
+      <hr size="15pt", width="", color="black">   
+    </header>
+    <article>
+      <!--<h1>💖 Hello World!</h1>-->
+      <h1>Word Details</h1>
+      <div>
+        <div id="imageGallery"></div>
+        <p id="dict"></p>
+        <p id="exp">
+          <div id="examples"></div>
+        </p>
+        <p id="syn"></p>
+        <p id="verb"></p>
+        <p id="sound"></p> 
+        <div id="wordsOfTheDayList"></div>
+        <!-- Display search history here -->
+      </div>
+      <div>
+        <!--<h3>Search History</h3>-->
+        <ul id="searchHistory">
+        </ul>
+      </div>
+
+      <!-- Add this modal container -->
+      <div id="wordDetailsModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeWordDetailsModal()">&times;</span>
+          <h2 id="modalWordTitle"></h2>
+          <p id="modalWordDefinition"></p>
+          <!-- Add more details as needed -->
+        </div>
+      </div>  
+      
+      <script type="text/javascript" src="main.js">
+        function displayWordDetails(word) {
+          localStorage.setItem('selectedWord', word);
+          window.location.href = 'wordDetails.html';
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+        displaySearchHistory();
+        displayWordsOfTheDay("wordsOfTheDayList", wordsOfTheDay);
+        });
+
+      </script>
+    </article> 
+    <footer>
+
+    </footer>
+  </body>
+</html>
