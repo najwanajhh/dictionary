@@ -1,0 +1,68 @@
+<!-- wordDetails.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Details</title>
+    <link rel="stylesheet" href="index.css" />
+    <style>
+      header {
+        background-image: url('dict.jpg');
+        max-height: 900px;
+      }
+      .sec {
+        margin-top: 110px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 100px;
+        padding: 20px 10px;
+        font-weight: bold;
+        font-size: 20px;
+        background-color: rgba(255, 255, 255, 0.556);
+        border-radius: 20px;
+        width: 800px;
+      }
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="hero1">
+          <nav>
+            <img src="" class="logo">
+            <ul>
+              <li class="nav1"><a>.</a></li>
+              <li class="nav1"><a href="index.html"> . </a></li>
+              <li class="nav1"><a href="">.</a></li>
+            </ul>
+          </nav>
+        </div>
+        <hr size="15pt" width="" color="black">
+      </header>
+    <h1 id="wordTitle"></h1>
+    <p id="wordDefinition"></p>
+    <!-- Add more details as needed -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Retrieve word details from localStorage or API and update the page
+            var wordTitle = document.getElementById("wordTitle");
+            var wordDefinition = document.getElementById("wordDefinition");
+
+            // Example: Retrieve word details from localStorage
+            var selectedWord = localStorage.getItem('selectedWord');
+            var wordDetails = localStorage.getItem(selectedWord + '_details');
+
+            wordTitle.textContent = selectedWord;
+            wordDefinition.innerHTML = wordDetails;
+        });
+    </script>
+</body>
+</html>

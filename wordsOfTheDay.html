@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Words of the Day</title>
+    <link rel="stylesheet" href="index.css" />
+    <style>
+        header{
+        background-image: url('dict.jpg');
+        max-height: 900px;
+      }
+      .sec{
+			margin-top: 110px;
+			margin-left: auto;
+			margin-right: auto;
+			margin-bottom: 100px;
+			padding:20px 10px;
+			font-weight: bold;
+			font-size: 20px;
+			background-color: rgba(255, 255, 255, 0.556);
+			border-radius: 20px;
+			width: 800px;
+      justify-content: center;
+      display: flex;
+      color: black;
+      
+		}
+    body{
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .logo{
+    		height: 50px;
+		    width: 50px;
+        margin-right: 20px;
+		}
+    .thai{
+		color: rgb(6, 6, 6);
+		font-family: Lucida Handwriting;
+		font-weight: bold;
+		font-size: 25px;
+		text-align: center;
+	}
+  .article{
+    display: flex;
+    justify-content: center;
+    border: 2px solid #ccc; /* Border added */
+    box-shadow: 2px 3px 10px 4px #5f5d5d;
+    border-radius: 5px; /* Added border-radius */
+    width:70%;
+    text-align: center;
+    background-color:  aliceblue;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+    </style>
+</head>
+<body>
+  <header>
+    <div class="hero1">
+      <nav>
+        <img src="logo.png" class="logo">
+        <h1>DICTIONARY & THESAURUS</h1>
+        <ul >
+          <li class="nav1"><a href="index.html"> Home </a></li>
+          <li class="nav1"><a href="history.html">History</a></li>
+        </ul>
+      </nav>
+      <!--<p>Welcome to Dictionary Application.</p>-->
+      <section class="sec">
+        <h2 class="thai">Words of The Day</h2>
+      </section>
+    </div>    
+    <!-- Your existing HTML code -->
+
+    <!-- Modal for update/delete success -->
+    <div id="updateDeleteModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeUpdateDeleteModal()">&times;</span>
+        <p id="updateDeleteModalMessage"></p>
+      </div>
+    </div>
+
+    <hr size="15pt", width="", color="black">   
+  </header>
+    <article>
+      <section class="article">
+        <p>Somehow by having your own wrods of the day can actually improve our vocabulary day by day.<br> So, keep on adding more words to this 'words of the day' page</p><br><br>
+      </section><br><br>
+        <div id="wordsOfTheDayList">
+            <!-- Display saved words here -->
+        </div>
+        <script>
+            var wordsOfTheDay = JSON.parse(localStorage.getItem('wordsOfTheDay')) || [];
+
+            function readWord(word) {
+            // Fetch and display all the data for the selected word
+            fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (Array.isArray(data) && data.length > 0) {
+                        var wordData = data[0];
+
+                        // Extract the information you want to display
+                        var definitions = wordData.meanings.map(meaning => meaning.definitions.map(def => def.definition)).flat();
+
+                        // Display the information (you can customize this part)
+                        var message = `
+                            Word: ${word}
+                            Definitions: ${definitions.join(', ')}
+                        `;
+
+                        alert(message);
+                    } else {
+                        alert('Word not found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    alert('An error occurred while fetching data.');
+                });
+            }
+            
+            function displayAllData(word) {
+            // Use the provided functions to fetch the data
+            Promise.all([
+                getDefinition(word),
+                getSynonyms(word),
+                getAntonyms(word),
+                getAudio(word)
+            ]).then(function (results) {
+                // Display the fetched data in an alert or console.log, you can modify this part based on your UI
+                var definition = results[0];
+                var synonyms = results[1];
+                var antonyms = results[2];
+                var audio = results[3];
+
+                var message = `
+                    Word: ${word}
+                    Definition: ${definition}
+                    Synonyms: ${synonyms}
+                    Antonyms: ${antonyms}
+                    Audio: ${audio}
+                `;
+
+                alert(message);
+                // Alternatively, you can display the data in a modal or another part of your UI
+            });
+        }
+
+        function displayWordsOfTheDay() {
+            var wordsOfTheDayList = document.getElementById("wordsOfTheDayList");
+            wordsOfTheDayList.innerHTML = "";
+            wordsOfTheDayList.style.textAlign = "center";
+            wordsOfTheDayList.style.fontWeight = "bold";
+
+            if (wordsOfTheDay.length > 0) {
+                wordsOfTheDayList.innerHTML = "Words of the Day:<br><br>";
+                wordsOfTheDay.forEach((word, index) => {
+                    var wordContainer = document.createElement("div");
+                    wordContainer.classList.add("word-container");
+                    var updateButton = document.createElement("button");
+                    updateButton.textContent = "Update";
+                    updateButton.onclick = function () {
+                        openUpdateDialog(index, wordContainer, word);
+                    };
+                    var deleteButton = document.createElement("button");
+                    deleteButton.textContent = "Delete";
+                    deleteButton.onclick = function () {
+                        deleteWord(index);
+                    };
+                    var readButton = document.createElement("button");
+                    readButton.textContent = "Read";
+                    readButton.onclick = function () {
+                        // Pass the word to the readWord function
+                        readWord(word);
+                        // Alternatively, you can uncomment the following line and use the displayAllData function
+                        // displayAllData(word);
+                    };
+
+                    wordContainer.innerHTML = `${word}<br><br>`;
+                    wordContainer.appendChild(updateButton);
+                    wordContainer.appendChild(deleteButton);
+                    wordContainer.appendChild(readButton);
+                    wordsOfTheDayList.appendChild(wordContainer);
+                });
+            }
+        }
+
+        function openUpdateDialog(index, wordContainer, currentWord) {
+          var inputField = document.createElement("input");
+          inputField.type = "text";
+          inputField.value = currentWord;
+          var saveButton = document.createElement("button");
+          saveButton.textContent = "Save";
+
+          saveButton.onclick = function () {
+            var newWord = inputField.value;
+
+            // Ensure the new word is not empty
+            if (newWord.trim() !== "") {
+              wordsOfTheDay[index] = newWord;
+              localStorage.setItem('wordsOfTheDay', JSON.stringify(wordsOfTheDay));
+              displayWordsOfTheDay();
+
+              // Display success modal
+              displayUpdateDeleteModal("Word successfully updated!");
+
+              // Close the modal after a brief delay
+              setTimeout(closeUpdateDeleteModal, 2000);
+            } else {
+              // Inform the user that the new word cannot be empty
+              alert("Please enter a valid word.");
+            }
+          };
+
+          wordContainer.innerHTML = "";
+          wordContainer.appendChild(inputField);
+          wordContainer.appendChild(saveButton);
+        }
+
+            function deleteWord(index) {
+              var isConfirmed = window.confirm("Are you sure you want to delete the word?");
+
+              if (isConfirmed) {
+                wordsOfTheDay.splice(index, 1);
+                localStorage.setItem('wordsOfTheDay', JSON.stringify(wordsOfTheDay)); // Update local storage
+                displayWordsOfTheDay();
+
+                // Display success modal
+                displayUpdateDeleteModal("Word successfully deleted!");
+              }
+
+            }
+
+            function displayUpdateDeleteModal(message) {
+              // Display the success message in the modal
+              document.getElementById("updateDeleteModalMessage").textContent = message;
+
+              // Display the modal
+              var modal = document.getElementById("updateDeleteModal");
+              modal.style.display = "block";
+            }
+
+            function closeUpdateDeleteModal() {
+              // Close the modal
+              var modal = document.getElementById("updateDeleteModal");
+              modal.style.display = "none";
+            }
+
+            displayWordsOfTheDay();
+            function displayAllData(word) {
+            // Use the provided functions to fetch the data
+            Promise.all([
+                getDefinition(word),
+                getSynonyms(word),
+                getAntonyms(word),
+                getAudio(word)
+            ]).then(function (results) {
+                // Display the fetched data in an alert or console.log, you can modify this part based on your UI
+                var definition = results[0];
+                var synonyms = results[1];
+                var antonyms = results[2];
+                var audio = results[3];
+
+                var message = `
+                    Word: ${word}
+                    Definition: ${definition}
+                    Synonyms: ${synonyms}
+                    Antonyms: ${antonyms}
+                    Audio: ${audio}
+                `;
+
+                alert(message);
+                // Alternatively, you can display the data in a modal or another part of your UI
+            });
+        }
+
+        function displayWordsOfTheDay() {
+            var wordsOfTheDayList = document.getElementById("wordsOfTheDayList");
+            wordsOfTheDayList.innerHTML = "";
+            wordsOfTheDayList.style.textAlign = "center";
+            wordsOfTheDayList.style.fontWeight = "bold";
+
+            if (wordsOfTheDay.length > 0) {
+                wordsOfTheDayList.innerHTML = "Words of the Day:<br><br>";
+                wordsOfTheDay.forEach((word, index) => {
+                    var wordContainer = document.createElement("div");
+                    wordContainer.classList.add("word-container");
+                    var updateButton = document.createElement("button");
+                    updateButton.textContent = "Update";
+                    updateButton.onclick = function () {
+                        openUpdateDialog(index, wordContainer, word);
+                    };
+                    var deleteButton = document.createElement("button");
+                    deleteButton.textContent = "Delete";
+                    deleteButton.onclick = function () {
+                        deleteWord(index);
+                    };
+                    var readButton = document.createElement("button");
+                    readButton.textContent = "Read";
+                    readButton.onclick = function () {
+                        // Pass the word to the readWord function
+                        readWord(word);
+                        // Alternatively, you can uncomment the following line and use the displayAllData function
+                        // displayAllData(word);
+                    };
+
+                    wordContainer.innerHTML = `${word}<br><br>`;
+                    wordContainer.appendChild(updateButton);
+                    wordContainer.appendChild(deleteButton);
+                    wordContainer.appendChild(readButton);
+                    wordsOfTheDayList.appendChild(wordContainer);
+                });
+            }
+        }
+        
+
+        </script>
+    </article>
+    <footer>
+        <!-- Your footer content if needed -->
+    </footer>
+</body>
+</html>
